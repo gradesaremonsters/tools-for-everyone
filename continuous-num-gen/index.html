@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Number Name Generator by Grades Are Monster</title>
+  <style>
+    body {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  background-color: #f2f2f2;
+  padding-top: 2px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 5px;
+}
+
+.list-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#number-list {
+  max-height: calc(75vh - 280px); /* Adjust the value based on your needs */
+  overflow-y: auto;
+  margin-top: 10px;
+  padding: 0;
+  list-style-type: none;
+}
+
+
+    h1 {
+      text-align: center;
+      font-size: 36px;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+      color: #6200EE;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    label {
+      font-weight: bold;
+      font-size: 24px;
+      color: #333;
+    }
+
+    input[type="number"] {
+      width: 200px;
+      height: 40px;
+      font-size: 20px;
+      padding: 5px;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #ffd700;
+      color: #333;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 20px;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    button:hover {
+      background-color: #ffcc00;
+    }
+
+    #result {
+      font-size: 50px;
+      font-weight: bold;
+      margin-top: 30px;
+      text-align: center;
+      animation: fadein 1s;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    #result span {
+      display: inline-block;
+      color: #ff4081; /* Pink color */
+    }
+
+    #number-list {
+      margin-top: 30px;
+      padding: 0;
+      list-style-type: none;
+    }
+
+    .number-entry {
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+      animation: slideup 0.5s;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      font-size: 20px;
+    }
+
+    .flash-effect {
+      animation: flash 1s;
+    }
+
+    @keyframes flash {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .emoji-effect {
+      animation: bounce 0.5s;
+      transform-origin: center bottom;
+    }
+
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Number Name Generator by Grades Are Monster</h1>
+
+    <label for="number-input">Write a number</label>
+    <input type="number" id="number-input" oninput="generateNumberName()">
+    <button onclick="addToGeneratedList()">Add to List</button>
+
+    <div id="result">
+      <span>Number Name => </span>
+      <span id="number-name"></span>
+    </div>
+
+    <h2>Number Names List</h2>
+    <ul id="number-list"></ul>
+
+    <script>
+      var generatedNumbers = [];
+
+      function generateNumberName() {
+        var numberInput = document.getElementById("number-input").value;
+        var resultSpan = document.getElementById("number-name");
+        var numberName = convertNumberToName(numberInput);
+        resultSpan.textContent = capitalizeFirstLetter(numberName);
+        resultSpan.classList.add("colorful-text");
+      }
+
+      function addToGeneratedList() {
+  var numberInput = document.getElementById("number-input").value;
+  var numberName = convertNumberToName(numberInput);
+  var generatedEntry = numberInput + " - " + capitalizeFirstLetter(numberName);
+  generatedNumbers.push(generatedEntry);
+  renderNumberList();
+
+  // Add flash effect to the list entry
+  var listItem = document.querySelector("#number-list li:last-child");
+  listItem.classList.add("flash-effect");
+
+  var emojiElement = document.createElement("span");
+  emojiElement.innerHTML = "  " + "&#x1F389;"; // Fireworks emoji
+  listItem.appendChild(emojiElement);
+  emojiElement.classList.add("emoji-effect");
+
+  // Scroll to the newly added item
+  listItem.scrollIntoView({ behavior: "smooth", block: "end" });
+}
+
+
+      function renderNumberList() {
+        var numberList = document.getElementById("number-list");
+        numberList.innerHTML = "";
+
+        generatedNumbers.forEach(function(entry) {
+          var listItem = document.createElement("li");
+          listItem.classList.add("number-entry");
+          listItem.textContent = entry;
+          numberList.appendChild(listItem);
+        });
+      }
+
+      function convertNumberToName(number) {
+      var ones = [
+        "", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+        "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"
+      ];
+
+      var tens = [
+        "", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"
+      ];
+
+      var scales = ["", "thousand", "million", "billion", "trillion", "quadrillion", "quintillion"];
+
+      if (number === "0") {
+        return "zero";
+      }
+
+      var numberParts = [];
+      var scaleIndex = 0;
+
+      while (number > 0) {
+        var threeDigits = number % 1000;
+
+        if (threeDigits !== 0) {
+          var digitGroup = [];
+
+          if (threeDigits >= 100) {
+            digitGroup.push(ones[Math.floor(threeDigits / 100)]);
+            digitGroup.push("hundred");
+            threeDigits %= 100;
+          }
+
+          if (threeDigits >= 20) {
+            digitGroup.push(tens[Math.floor(threeDigits / 10)]);
+            threeDigits %= 10;
+          }
+
+          if (threeDigits > 0) {
+            digitGroup.push(ones[threeDigits]);
+          }
+
+          var scale = scales[scaleIndex];
+          if (scale && digitGroup.length > 0) {
+            digitGroup.push(scale);
+          }
+
+          numberParts.unshift(digitGroup.join(" "));
+        }
+
+        number = Math.floor(number / 1000);
+        scaleIndex++;
+      }
+
+      return numberParts.join(" ");
+    }
+
+      function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      }
+    </script>
+  </div>
+</body>
+</html>
